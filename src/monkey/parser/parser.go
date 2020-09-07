@@ -71,6 +71,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registrerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registrerPrefix(token.TRUE, p.parseBoolean)
 	p.registrerPrefix(token.FALSE, p.parseBoolean)
+	p.registrerPrefix(token.LPAREN, p.parseGroupedExpression)
 
 	// Read two tokens, so curToken and peekToken are both set
 	p.nextToken()
@@ -128,6 +129,18 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 func (p *Parser) parseBoolean() ast.Expression {
 	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
+}
+
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	p.nextToken()
+
+	exp := p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return exp
 }
 
 func (p *Parser) registrerPrefix(tokenType token.TokenType, fn prefixParseFn) {
