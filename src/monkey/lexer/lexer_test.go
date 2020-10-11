@@ -26,6 +26,8 @@ func TestNextToken(t *testing.T) {
 
 	10 == 10;
 	10 != 9;
+	"foobar"
+	"foo bar"
 	` // the source code is interpreted as a string. For prod-like setup, you would also need the file name and track the line numbers, so that it is easier to debug parsing errors
 
 	tests := []struct {
@@ -105,6 +107,8 @@ func TestNextToken(t *testing.T) {
 		{token.NOT_EQ, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+		{token.STRING, "foobar"},
+		{token.STRING, "foo bar"},
 		{token.EOF, ""},
 	}
 
